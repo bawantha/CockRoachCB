@@ -6,12 +6,14 @@ import '../services/interfaces/encryption_service.dart';
 import '../services/interfaces/sync_service.dart';
 import '../services/interfaces/history_service.dart';
 import '../services/interfaces/device_manager.dart';
+import '../services/interfaces/tray_manager.dart';
 import '../services/implementations/firebase_auth_service.dart';
 import '../services/implementations/app_encryption_service.dart';
 import '../services/implementations/firestore_sync_service.dart';
 import '../services/implementations/app_history_service.dart';
 import '../services/implementations/platform_clipboard_monitor.dart';
 import '../services/implementations/app_device_manager.dart';
+import '../services/implementations/desktop_tray_manager.dart';
 import '../orchestrator/app_orchestrator.dart';
 
 final getIt = GetIt.instance;
@@ -22,6 +24,7 @@ Future<void> initDependencies() async {
 
   getIt.registerLazySingleton<AuthService>(() => FirebaseAuthService());
   getIt.registerLazySingleton<EncryptionService>(() => AppEncryptionService());
+  getIt.registerLazySingleton<TrayManager>(() => DesktopTrayManager());
   
   getIt.registerLazySingleton<SyncService>(
     () => FirestoreSyncService(getIt<AuthService>())
