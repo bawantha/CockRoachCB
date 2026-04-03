@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/clipboard_models.dart';
 import '../interfaces/sync_service.dart';
 import '../interfaces/auth_service.dart';
+import '../../utils/app_logger.dart';
 
 class FirestoreSyncService implements SyncService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -17,7 +18,14 @@ class FirestoreSyncService implements SyncService {
 
   @override
   Future<void> upload(EncryptedEntry entry) async {
-    await _entriesRef.doc(entry.id).set(entry.toJson());
+    appLogger.d('Uploading entry to Firestore: ${entry.id}');
+    try {
+      await _entriesRef.doc(entry.id).set(entry.toJson());
+      appLogger.v('Successfully uploaded entry: ${entry.id}');
+    } catch (e, st) {
+      appLogger.e('Failed to upload entry to Firestore', error: e, stackTrace: st);
+      rethrow;
+    }
   }
 
   @override
@@ -43,7 +51,14 @@ class FirestoreSyncService implements SyncService {
 
   @override
   Future<void> deleteEntry(String entryId) async {
-    await _entriesRef.doc(entryId).delete();
+    appLogger.w('Deleting entry from Firestore: $entryId');
+    try {
+      await _entriesRef.doc(entryId).delete();
+      appLogger.i('Successfully deleted entry: $entryId');
+    } catch (e, st) {
+      appLogger.e('Failed to delete entry', error: e, stackTrace: st);
+      rethrow;
+    }
   }
 
   @override
