@@ -4,6 +4,7 @@ import '../../models/clipboard_models.dart';
 import '../interfaces/history_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../interfaces/auth_service.dart';
+import '../../utils/app_logger.dart';
 
 class AppHistoryService implements HistoryService {
   final SharedPreferences _prefs;
@@ -14,6 +15,7 @@ class AppHistoryService implements HistoryService {
   List<ClipboardEntryMeta> _history = [];
   
   AppHistoryService(this._prefs, this._authService) {
+    appLogger.d('Initializing AppHistoryService...');
     _loadFromLocal();
   }
 
@@ -22,6 +24,9 @@ class AppHistoryService implements HistoryService {
     if (historyJsonStr != null) {
       final List<dynamic> decoded = jsonDecode(historyJsonStr);
       _history = decoded.map((e) => ClipboardEntryMeta.fromJson(e as Map<String, dynamic>)).toList();
+      appLogger.i('Loaded ${_history.length} history entries from local storage.');
+    } else {
+      appLogger.d('No local history found.');
     }
   }
 
@@ -45,6 +50,7 @@ class AppHistoryService implements HistoryService {
 
   @override
   Future<void> addEntry(ClipboardEntryMeta meta) async {
+    appLogger.d('Adding new history entry: ${meta.id}');
     // Avoid duplicates
     _history.removeWhere((e) => e.id == meta.id);
     _history.insert(0, meta);
@@ -52,10 +58,12 @@ class AppHistoryService implements HistoryService {
       _history = _history.sublist(0, 50);
     }
     await _saveToLocal();
+    appLogger.v('History updated and saved locally.');
   }
 
   @override
   Future<void> deleteEntry(String entryId) async {
+    appLogger.w('Deleting local history entry: $entryId');
     _history.removeWhere((h) => h.id == entryId);
     await _saveToLocal();
   }

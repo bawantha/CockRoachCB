@@ -18,6 +18,13 @@ class LoginRequested extends AuthEvent {
   @override
   List<Object> get props => [email, password];
 }
+class RegisterRequested extends AuthEvent {
+  final String email;
+  final String password;
+  const RegisterRequested(this.email, this.password);
+  @override
+  List<Object> get props => [email, password];
+}
 class LogoutRequested extends AuthEvent {}
 class AuthStateChanged extends AuthEvent {
   final String? userId;
@@ -77,6 +84,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
            emit(Authenticated(userId));
         } else {
            emit(const AuthError("Failed to authenticate"));
+        }
+      } catch (e) {
+        emit(AuthError(e.toString()));
+      }
+    });
+
+    on<RegisterRequested>((event, emit) async {
+      emit(AuthLoading());
+      try {
+        await _authService.register(event.email, event.password);
+        final userId = _authService.currentUserId;
+        if (userId != null) {
+           await _encryptionService.initKey(userId, event.password);
+           emit(Authenticated(userId));
+        } else {
+           emit(const AuthError("Failed to register"));
         }
       } catch (e) {
         emit(AuthError(e.toString()));

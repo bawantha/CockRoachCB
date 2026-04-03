@@ -14,10 +14,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController(text: 'test@example.com');
   final _passwordController = TextEditingController(text: 'password123'); // Default for quick testing
   bool _isLoading = false;
+  bool _isLogin = true; // Toggle between login and register
 
   void _submit() {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) return;
-    context.read<AuthBloc>().add(LoginRequested(_emailController.text, _passwordController.text));
+    if (_isLogin) {
+      context.read<AuthBloc>().add(LoginRequested(_emailController.text, _passwordController.text));
+    } else {
+      context.read<AuthBloc>().add(RegisterRequested(_emailController.text, _passwordController.text));
+    }
   }
 
   @override
@@ -96,7 +101,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 24, height: 24, 
                             child: CircularProgressIndicator(color: AppTheme.textPrimary, strokeWidth: 2)
                           )
-                        : const Text('Connect & Sync', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        : Text(_isLogin ? 'Connect & Sync (Sign In)' : 'Create Account & Sync', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: _isLoading ? null : () {
+                        setState(() {
+                          _isLogin = !_isLogin;
+                        });
+                      },
+                      child: Text(
+                        _isLogin ? 'Need an account? Register instead' : 'Already have an account? Sign In',
+                        style: const TextStyle(color: AppTheme.primary),
+                      ),
                     ),
                   ],
                 ),
