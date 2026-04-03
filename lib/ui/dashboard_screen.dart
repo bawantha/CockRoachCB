@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/auth_bloc.dart';
 import '../blocs/history_bloc.dart';
 import '../models/clipboard_models.dart';
+import 'package:go_router/go_router.dart';
 import 'styles.dart';
 
 class DashboardScreen extends StatelessWidget {

@@ -37,7 +37,7 @@ class NonNullUint8ListConverter implements JsonConverter<Uint8List, List<int>> {
 }
 
 @freezed
-class ClipboardEntry with _$ClipboardEntry {
+abstract class ClipboardEntry with _$ClipboardEntry {
   const factory ClipboardEntry({
     required String id,
     required ClipboardContentType type,
@@ -51,7 +51,7 @@ class ClipboardEntry with _$ClipboardEntry {
 }
 
 @freezed
-class ClipboardEntryMeta with _$ClipboardEntryMeta {
+abstract class ClipboardEntryMeta with _$ClipboardEntryMeta {
   const factory ClipboardEntryMeta({
     required String id,
     required ClipboardContentType type,
@@ -65,7 +65,7 @@ class ClipboardEntryMeta with _$ClipboardEntryMeta {
 }
 
 @freezed
-class EncryptedEntry with _$EncryptedEntry {
+abstract class EncryptedEntry with _$EncryptedEntry {
   const factory EncryptedEntry({
     required String id,
     required String userId,
@@ -81,7 +81,7 @@ class EncryptedEntry with _$EncryptedEntry {
 }
 
 @freezed
-class DeviceInfo with _$DeviceInfo {
+abstract class DeviceInfo with _$DeviceInfo {
   const factory DeviceInfo({
     required String deviceId,
     required String platform,
@@ -96,7 +96,7 @@ class DeviceInfo with _$DeviceInfo {
 }
 
 @freezed
-class OfflineQueue with _$OfflineQueue {
+abstract class OfflineQueue with _$OfflineQueue {
   const OfflineQueue._();
   const factory OfflineQueue({
     @Default([]) List<ClipboardEntry> pending,
