@@ -13,7 +13,10 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clipboard History', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Clipboard History',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.devices, color: AppTheme.textSecondary),
@@ -34,10 +37,12 @@ class DashboardScreen extends StatelessWidget {
       body: BlocBuilder<HistoryBloc, HistoryState>(
         builder: (context, state) {
           if (state is HistoryLoading) {
-            return const Center(child: CircularProgressIndicator(color: AppTheme.primary));
+            return const Center(
+              child: CircularProgressIndicator(color: AppTheme.primary),
+            );
           } else if (state is HistoryLoaded) {
             if (state.entries.isEmpty) {
-              return _buildEmptyState();
+              return const _EmptyState();
             }
             return ListView.separated(
               padding: const EdgeInsets.all(16),
@@ -49,18 +54,32 @@ class DashboardScreen extends StatelessWidget {
               },
             );
           }
-          return const Center(child: Text('Unknown State', style: TextStyle(color: AppTheme.textSecondary)));
+          return const Center(
+            child: Text(
+              'Unknown State',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
+          );
         },
       ),
     );
   }
+}
 
-  Widget _buildEmptyState() {
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          Icon(Icons.content_paste_off, size: 64, color: AppTheme.surfaceHighlight),
+          Icon(
+            Icons.content_paste_off,
+            size: 64,
+            color: AppTheme.surfaceHighlight,
+          ),
           SizedBox(height: 16),
           Text(
             'No clipboard history yet',
@@ -77,6 +96,24 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
+class _EntryIcon extends StatelessWidget {
+  final IconData icon;
+
+  const _EntryIcon(this.icon);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: const BoxDecoration(
+        color: AppTheme.surfaceHighlight,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      child: Icon(icon, color: AppTheme.primaryLight, size: 24),
+    );
+  }
+}
+
 class _ClipboardCard extends StatelessWidget {
   final ClipboardEntryMeta entry;
 
@@ -84,13 +121,18 @@ class _ClipboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    IconData icon;
-    if (entry.type == 'image') {
-      icon = Icons.image;
-    } else if (entry.type == 'file') {
-      icon = Icons.insert_drive_file;
-    } else {
-      icon = Icons.text_snippet;
+    Widget iconWidget;
+    switch (entry.type) {
+      case ClipboardContentType.image:
+        iconWidget = const _EntryIcon(Icons.image);
+        break;
+      // HTML is often used for rich text/files, using insert_drive_file as a fallback
+      case ClipboardContentType.html:
+        iconWidget = const _EntryIcon(Icons.insert_drive_file);
+        break;
+      case ClipboardContentType.text:
+        iconWidget = const _EntryIcon(Icons.text_snippet);
+        break;
     }
 
     return Card(
@@ -104,14 +146,7 @@ class _ClipboardCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppTheme.surfaceHighlight,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: AppTheme.primaryLight, size: 24),
-              ),
+              iconWidget,
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -130,18 +165,32 @@ class _ClipboardCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.devices, size: 12, color: AppTheme.textSecondary),
+                        const Icon(
+                          Icons.devices,
+                          size: 12,
+                          color: AppTheme.textSecondary,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           entry.deviceId,
-                          style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textSecondary,
+                          ),
                         ),
                         const Spacer(),
-                        const Icon(Icons.access_time, size: 12, color: AppTheme.textSecondary),
+                        const Icon(
+                          Icons.access_time,
+                          size: 12,
+                          color: AppTheme.textSecondary,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           _formatTime(entry.timestamp),
-                          style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textSecondary,
+                          ),
                         ),
                       ],
                     ),
