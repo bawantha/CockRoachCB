@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../utils/app_logger.dart';
 import '../interfaces/auth_service.dart';
@@ -17,9 +16,6 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<void> register(String email, String password) async {
     try {
-      if (defaultTargetPlatform == TargetPlatform.macOS) {
-        await _firebaseAuth.setPersistence(Persistence.NONE);
-      }
       appLogger.i('Registering new user with email: $email');
       await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -35,9 +31,6 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<void> signIn(String email, String password) async {
     try {
-      if (defaultTargetPlatform == TargetPlatform.macOS) {
-        await _firebaseAuth.setPersistence(Persistence.NONE);
-      }
       appLogger.i('Attempting sign in for email: $email');
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
