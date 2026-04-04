@@ -42,7 +42,16 @@ class _DeviceScreenState extends State<DeviceScreen> {
             final devices = state.devices;
             if (devices.isEmpty) {
               return Center(
-                child: Text('No other devices connected.', style: textTheme.bodyLarge?.copyWith(color: AppTheme.textSecondary)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.devices_other, size: 64, color: AppTheme.surfaceHighlight),
+                    const SizedBox(height: 16),
+                    Text('No other devices connected.', style: textTheme.bodyLarge?.copyWith(color: AppTheme.textSecondary)),
+                    const SizedBox(height: 8),
+                    Text('Sign in on another device to see it here.', style: textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary)),
+                  ],
+                ),
               );
             }
             return ListView.builder(
@@ -68,12 +77,12 @@ class _DeviceScreenState extends State<DeviceScreen> {
                       'Last Active: ${_formatDate(device.lastActiveAt)}',
                       style: textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline, color: AppTheme.error),
-                      onPressed: () {
-                        // We would call context.read<DeviceBloc>().add(RevokeDevice(device.deviceId));
-                        // But wait, the bloc doesn't have it defined right now. Skip for now.
-                      },
+                    trailing: Tooltip(
+                      message: 'Remove device (coming soon)',
+                      child: IconButton(
+                        icon: const Icon(Icons.delete_outline, color: AppTheme.textSecondary),
+                        onPressed: null,
+                      ),
                     ),
                   ),
                 );
