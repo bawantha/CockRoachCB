@@ -1,0 +1,3 @@
+## 2024-04-05 - Extract Static Subtrees in Lists
+**Learning:** Returning inline widgets with non-const allocations (like `BoxDecoration` without `const`, or full empty state columns) inside `itemBuilder` or `BlocBuilder` causes unnecessary object allocations and layout calculations during scrolling/state updates. Also found a critical type check bug where an enum `ClipboardContentType` was being compared to a `String`, which analyzer flagged but also meant proper rendering was failing.
+**Action:** Always extract static widget subtrees (`_EmptyState`, `_EntryIcon`) into independent `StatelessWidget` classes with `const` constructors. This allows Flutter's engine to cache and reuse them, avoiding heavy object churn when large lists rebuild.
